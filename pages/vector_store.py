@@ -5,6 +5,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone
+from summarize_image import image_to_text
 
 def read_pdf(filename, file):
     docs = []
@@ -12,9 +13,23 @@ def read_pdf(filename, file):
     for i in range(len(reader.pages)):
         st.progress(i / len(reader.pages))  # Update progress ratio
         page = reader.pages[i]
+        count = 0
+        page_content = ''
+        for image_file_object in page.images:
+            try:
+                image_path = str(count) + image_file_object.name
+                with open(image_path, "wb") as fp:
+                    fp.write(image_file_object.data)
+                    count += 1
+                page_content += image_to_text(image_path)
+            except Exception as e:
+                raise
+            finally:
+                os.remove(image_path)
+        page_content += page.extract_text()
         docs.append(
             Document(
-                page_content=page.extract_text(),  # Call the method to extract text
+                page_content=page_content,  # Call the method to extract text
                 metadata={
                     "source": filename,
                     "page": i + 1
@@ -29,7 +44,6 @@ def main():
         model="text-embedding-3-large",
         api_key=os.environ.get('OPENAI_API_KEY')
     )
-    
     # Initialize Pinecone
     pinecone_api_key = os.environ.get("PINECONE_API_KEY")
     pc = Pinecone(api_key=pinecone_api_key)
