@@ -24,8 +24,9 @@ def retreive_context(prompt):
     )
     retriever = vectorstore.as_retriever()
     matched_docs = retriever.invoke(prompt)
-    for doc in matched_docs:
-        print(doc)
+    with st.sidebar:
+        for doc in matched_docs:
+            st.write(doc.metadata)
     return matched_docs[0]
 
 def get_completion(prompt):
@@ -62,7 +63,7 @@ def main():
             }
         )
         show_history()
-        st.write(context.metadata)
+        #st.write(context.metadata)
 
 if __name__=="__main__":
 
