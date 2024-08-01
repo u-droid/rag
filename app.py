@@ -62,6 +62,7 @@ def main():
             }
         )
         show_history()
+        st.write(context.metadata)
 
 if __name__=="__main__":
 
