@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone
 
-def read_pdf(file):
+def read_pdf(filename, file):
     docs = []
     reader = PdfReader(file)
     for i in range(len(reader.pages)):
@@ -15,7 +15,7 @@ def read_pdf(file):
             Document(
                 page_content=reader.pages[i].extract_text,
                 metadata={
-                    "source":file,
+                    "source":filename,
                     "page":i+1
                 }
             )
@@ -30,7 +30,6 @@ def main():
     )
     pinecone_api_key = os.environ.get("PINECONE_API_KEY")
     pc = Pinecone(api_key=pinecone_api_key)
-    print(pc.list_indexes())
     index_name = 'exam'
     vectorstore = PineconeVectorStore(
         index_name=index_name,
@@ -40,7 +39,7 @@ def main():
     uploaded_file = st.file_uploader(label="Upload")
     if uploaded_file is not None:
         with st.spinner("Vectorizing"):
-            docs = read_pdf(uploaded_file.name)
+            docs = read_pdf(uploaded_file.name, uploaded_file.getvalue())
             vectorstore.add_documents(docs)
         st.write('uploaded')
 
