@@ -26,6 +26,7 @@ def retreive_context(prompt):
     matched_docs = retriever.invoke(prompt)
     with st.sidebar:
         for doc in matched_docs:
+            st.success(doc.page_content)
             st.write(doc.metadata)
     return matched_docs[0]
 
