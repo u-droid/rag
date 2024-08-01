@@ -7,8 +7,8 @@ load_dotenv()
 from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 
-os.environ['OPENAI_API_KEY'] = os.getenv('OPENAI_API_KEY')
-os.environ['PINECONE_API_KEY'] = os.getenv('PINECONE_API_KEY')
+os.environ['OPENAI_API_KEY'] = st.secrets.OPENAI_API_KEY
+os.environ['PINECONE_API_KEY'] = st.secrets.PINECONE_API_KEY
 
 def retreive_context(prompt):
     pinecone_api_key = os.environ.get("PINECONE_API_KEY")
