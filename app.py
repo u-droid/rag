@@ -65,7 +65,8 @@ def main():
         )
         show_history()
         #st.write(context.metadata)
-
+    show_history()
+    
 if __name__=="__main__":
 
     if 'history' not in st.session_state:

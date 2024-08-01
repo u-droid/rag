@@ -11,7 +11,7 @@ def read_pdf(filename, file):
     docs = []
     reader = PdfReader(file)  # Use the file-like object directly
     for i in range(len(reader.pages)):
-        st.progress(i / len(reader.pages))  # Update progress ratio
+        #st.progress(i / len(reader.pages))  # Update progress ratio
         page = reader.pages[i]
         count = 0
         page_content = ''
@@ -27,6 +27,7 @@ def read_pdf(filename, file):
             finally:
                 os.remove(image_path)
         page_content += page.extract_text()
+        st.write(page_content)
         docs.append(
             Document(
                 page_content=page_content,  # Call the method to extract text
