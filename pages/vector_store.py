@@ -31,7 +31,7 @@ def main():
     pinecone_api_key = os.environ.get("PINECONE_API_KEY")
     pc = Pinecone(api_key=pinecone_api_key)
     print(pc.list_indexes())
-    index_name = 'airline'
+    index_name = 'exam'
     vectorstore = PineconeVectorStore(
         index_name=index_name,
         embedding=embeddings,
