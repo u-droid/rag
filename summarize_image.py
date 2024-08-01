@@ -1,5 +1,19 @@
+import os
 from openai import OpenAI
 import base64
+from PIL import Image
+
+def convert_tiff_to_jpg(tiff_path):
+    # Open the TIFF file
+    jpg_path = tiff_path.replace('.tiff','.jpg')
+    with Image.open(tiff_path) as img:
+        # Convert the image to RGB (JPG does not support transparency)
+        rgb_img = img.convert('RGB')
+        # Save the image in JPG format
+        rgb_img.save(jpg_path, 'JPEG')
+    os.remove(tiff_path)
+    return jpg_path
+
 
 # Function to encode the image
 def encode_image(image_path):

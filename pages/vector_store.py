@@ -5,7 +5,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone
-from summarize_image import image_to_text
+from summarize_image import image_to_text, convert_tiff_to_jpg
 
 def read_pdf(filename, file):
     docs = []
@@ -21,6 +21,8 @@ def read_pdf(filename, file):
                 with open(image_path, "wb") as fp:
                     fp.write(image_file_object.data)
                     count += 1
+                if '.tiff' in image_path:
+                    image_path = convert_tiff_to_jpg(image_path)
                 page_content += image_to_text(image_path)
             except Exception as e:
                 st.error(str(e))
