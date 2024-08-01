@@ -23,7 +23,8 @@ def read_pdf(filename, file):
                     count += 1
                 page_content += image_to_text(image_path)
             except Exception as e:
-                raise
+                st.error(str(e))
+                st.error(image_path)
             finally:
                 os.remove(image_path)
         page_content += page.extract_text()
