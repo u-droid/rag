@@ -48,7 +48,7 @@ def show_history():
             st.write(conv.get('assistant'))
 
 def main():
-    st.write(os.environ.items())
+    #st.write(os.environ.items())
     prompt = st.chat_input("Say something")
     if prompt:
         context = retreive_context(prompt)
