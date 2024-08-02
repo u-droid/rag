@@ -5,33 +5,17 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone
-from summarize_image import image_to_text, convert_tiff_to_jpg
 
-def read_pdf(filename, file):
-    docs = []
+def vectorizer(filename, file, vectorstore: PineconeVectorStore):
     reader = PdfReader(file)  # Use the file-like object directly
+    progress_bar = st.progress(0)
     for i in range(len(reader.pages)):
-        #st.progress(i / len(reader.pages))  # Update progress ratio
+        progress_bar.progress(i / len(reader.pages))  # Update progress ratio
         page = reader.pages[i]
-        count = 0
         page_content = ''
-        for image_file_object in page.images:
-            try:
-                image_path = str(count) + image_file_object.name
-                with open(image_path, "wb") as fp:
-                    fp.write(image_file_object.data)
-                    count += 1
-                if '.tiff' in image_path:
-                    image_path = convert_tiff_to_jpg(image_path)
-                page_content += image_to_text(image_path)
-            except Exception as e:
-                st.error(str(e))
-                st.error(image_path)
-            finally:
-                os.remove(image_path)
         page_content += page.extract_text()
-        st.write(page_content)
-        docs.append(
+        #st.write(page_content)
+        vectorstore.add_documents([
             Document(
                 page_content=page_content,  # Call the method to extract text
                 metadata={
@@ -39,8 +23,7 @@ def read_pdf(filename, file):
                     "page": i + 1
                 }
             )
-        )
-    return docs
+        ])
 
 def main():
     # Initialize embeddings
@@ -57,14 +40,13 @@ def main():
         embedding=embeddings,
         pinecone_api_key=pinecone_api_key
     )
-    
     uploaded_file = st.file_uploader(label="Upload")
     if uploaded_file is not None:
         with st.spinner("Vectorizing"):
             # Use the file-like object directly
-            docs = read_pdf(uploaded_file.name, uploaded_file)
-            vectorstore.add_documents(docs)
+            vectorizer(uploaded_file.name, uploaded_file, vectorstore)
         st.write('Uploaded and vectorized successfully.')
 
 if __name__ == "__main__":
     main()
+    
