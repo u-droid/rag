@@ -9,13 +9,13 @@ from pinecone import Pinecone
 def vectorizer(filename, file, vectorstore: PineconeVectorStore):
     reader = PdfReader(file)  # Use the file-like object directly
     progress_bar = st.progress(0)
+    docs = []
     for i in range(len(reader.pages)):
-        progress_bar.progress(i / len(reader.pages))  # Update progress ratio
+        progress_bar.progress(i / len(reader.pages), text=f"Vectorized {i} pages")  # Update progress ratio
         page = reader.pages[i]
         page_content = ''
         page_content += page.extract_text()
-        #st.write(page_content)
-        vectorstore.add_documents([
+        docs.append(
             Document(
                 page_content=page_content,  # Call the method to extract text
                 metadata={
@@ -23,7 +23,10 @@ def vectorizer(filename, file, vectorstore: PineconeVectorStore):
                     "page": i + 1
                 }
             )
-        ])
+        )
+        if len(docs)==100:
+            vectorstore.add_documents()
+            docs = []
 
 def main():
     # Initialize embeddings
