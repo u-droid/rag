@@ -25,7 +25,7 @@ def vectorizer(filename, file, vectorstore: PineconeVectorStore):
             )
         )
         if len(docs)==100:
-            vectorstore.add_documents()
+            vectorstore.add_documents(docs)
             docs = []
 
 def main():
