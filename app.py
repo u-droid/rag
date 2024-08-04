@@ -63,7 +63,7 @@ def main():
                 'assistant':completion
             }
         )
-        show_history()
+        #show_history()
         #st.write(context.metadata)
     show_history()
     
