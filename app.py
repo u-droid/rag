@@ -35,7 +35,7 @@ def get_completion(prompt):
         api_key=os.environ.get('OPENAI_API_KEY')
     )
     completion = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[
             {"role": "user", "content": prompt}
         ]
