@@ -27,6 +27,8 @@ def vectorizer(filename, file, vectorstore: PineconeVectorStore):
         if len(docs)==100:
             vectorstore.add_documents(docs)
             docs = []
+    if len(docs)>0:
+        vectorstore.add_documents(docs)
 
 def main():
     # Initialize embeddings
